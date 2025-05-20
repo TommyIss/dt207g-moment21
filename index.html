@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test av API</title>
+</head>
+<body>
+    <h1>Test av API</h1>
+
+    <script>
+        let url = 'http://127.0.0.1:3000/api/workexperience';
+
+        getData();
+        postData('McDonalds', 'Medarbetare', 'Norrköping', '2016-12-01', '2020-12-01', `Bredvid mina studier jobbade jag på McDonalds i drygt fyra år. Mitt arbete bestod av att jobba i köket, stå i kassan, ta emot ny-kommande varor och städning.`);
+        async function getData() {
+            let response = await fetch(url);
+
+            let data = await response.json();
+
+            console.table(data);
+        }
+
+        async function postData(companyname, jobtitle, location, startdate, enddate, description) {
+            let experience = {
+                companyname: companyname,
+                jobtitle: jobtitle,
+                location: location,
+                startdate: startdate,
+                enddate: enddate,
+                description: description
+            };
+
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'Application/json'
+                },
+                body: JSON.stringify(experience)
+            });
+
+            let data = await response.json();
+            console.log(data);
+        }
+    </script>
+</body>
+</html>
