@@ -44,6 +44,23 @@ app.get('/api/workexperience', (req, res) => {
     });
 });
 
+app.get('/api/workexperience/:id', (req, res) => {
+    let id = req.params.id;
+
+    // Hämta jobberfarenhet med specifik ID
+    connection.query(`SELECT * FROM workexperience WHERE id=?`, [id], (err, resault) => {
+        if(err) {
+            res.status(500).json({error: 'Something went wrong: ' + err});
+        }
+        
+        if(resault.length === 0) {
+            res.status(404).json({message: 'Inga erfarenheter hittades'});
+        } else {
+            res.json(resault[0]);
+        }
+    });
+});
+
 app.post('/api/workexperience', (req, res) => {
     let { companyname, jobtitle, location, startdate, enddate, description } = req.body;
 
