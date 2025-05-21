@@ -31,15 +31,15 @@ app.get('/api', (req, res) => {
 app.get('/api/workexperience', (req, res) => {
     
     // Hämta jobberfarenhet
-    connection.query(`SELECT * FROM workexperience`, (err, resault) => {
+    connection.query(`SELECT * FROM workexperience`, (err, result) => {
         if(err) {
             res.status(500).json({error: 'Something went wrong: ' + err});
         }
         
-        if(resault.length === 0) {
+        if(!result || result.length === 0) {
             res.status(404).json({message: 'Inga erfarenheter hittades'});
         } else {
-            res.json(resault);
+            res.json(result);
         }
     });
 });
