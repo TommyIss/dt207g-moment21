@@ -34,13 +34,15 @@ app.get('/api/workexperience', (req, res) => {
     connection.query(`SELECT * FROM workexperience`, (err, result) => {
         if(err) {
             res.status(500).json({error: 'Something went wrong: ' + err});
+            return;
         }
         
         if(!result || result.length === 0) {
             res.status(404).json({message: 'Inga erfarenheter hittades'});
-        } else {
-            res.json(result);
+            return;
         }
+        res.json(result);
+        
     });
 });
 
@@ -48,20 +50,23 @@ app.get('/api/workexperience/:id', (req, res) => {
     let id = req.params.id;
 
     // Hämta jobberfarenhet med specifik ID
-    connection.query(`SELECT * FROM workexperience WHERE id=?`, [id], (err, resault) => {
+    connection.query(`SELECT * FROM workexperience WHERE id=?`, [id], (err, result) => {
         if(err) {
             res.status(500).json({error: 'Something went wrong: ' + err});
+            return;
         }
         
-        if(resault.length === 0) {
+        if(!result || result.length === 0) {
             res.status(404).json({message: 'Inga erfarenheter hittades'});
-        } else {
-            res.json(resault[0]);
+            return;
         }
+
+        res.json(result[0]);
+        
     });
 });
 
-app.post('/api/workexperience', (req, res) => {
+app.post('/api/workexperience', async (req, res) => {
     let { companyname, jobtitle, location, startdate, enddate, description } = req.body;
 
     // Fel
@@ -86,7 +91,7 @@ app.post('/api/workexperience', (req, res) => {
     }
 
     // Lägg till i databasen
-    connection.query(`INSERT INTO workexperience(companyname, jobtitle, location, startdate, enddate, description)VALUES(?, ?, ?, ?, ?, ?);`, [companyname, jobtitle, location, startdate, enddate, description], (err, result) => {
+    await connection.query(`INSERT INTO workexperience(companyname, jobtitle, location, startdate, enddate, description)VALUES(?, ?, ?, ?, ?, ?);`, [companyname, jobtitle, location, startdate, enddate, description], (err, result) => {
         if(err) {
             res.status(500).json({error: 'Något har gått fel: ' + err});
             return;
